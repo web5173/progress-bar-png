@@ -1,7 +1,8 @@
 function createProgressBar(progress, color = '#03ABA0', width = 150, height = 28) {
-  if (typeof progress !== 'number' || !Number.isFinite(progress) || progress < 0 || progress > 1) {
-    throw new TypeError('progress must be a fraction from 0 to 1');
+  if (typeof progress !== 'number' || !Number.isFinite(progress)) {
+    throw new TypeError('progress must be a finite number');
   }
+  progress = Math.min(1, Math.max(0, progress));
   if (typeof color !== 'string' || !/^#[0-9A-Fa-f]{6}$/.test(color)) {
     throw new TypeError('color must be a #RRGGBB hex string');
   }

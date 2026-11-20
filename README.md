@@ -42,7 +42,7 @@ const pngBuffer = createProgressBar(
 
 Parameters:
 
-- `progress`: a fraction from `0` to `1`. Convert percentages at the call site, for example `65 / 100`.
+- `progress`: a finite number. Values below `0` are treated as `0`, and values above `1` are treated as `1`. Convert percentages at the call site, for example `65 / 100`.
 - `color`: optional six-digit `#RRGGBB` color; defaults to `#03ABA0`.
 - `width`, `height`: optional positive integers; default to `150` and `28`.
 

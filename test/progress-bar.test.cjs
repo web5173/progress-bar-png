@@ -83,9 +83,19 @@ test('bundle creates PNG Buffer data with the requested two-opacity progress spl
   assert.equal(pixels.length, rowBytes * 28);
 });
 
-test('bundle accepts fractional progress, hex color, and custom dimensions', () => {
+test('bundle clamps out-of-range progress and accepts hex color and custom dimensions', () => {
   const createProgressBar = loadBundleFunction();
-  assert.throws(() => createProgressBar(25), /fraction from 0 to 1/);
+  assert.throws(() => createProgressBar(NaN), /finite number/);
+  assert.throws(() => createProgressBar(Infinity), /finite number/);
+
+  const empty = readChunks(new Uint8Array(createProgressBar(-0.25, '#0A141E', 8, 2)));
+  const emptyPixels = readStoredZlib(empty.get('IDAT'));
+  assert.deepEqual([...emptyPixels], [0, 255, 0, 255]);
+
+  const full = readChunks(new Uint8Array(createProgressBar(1.25, '#0A141E', 8, 2)));
+  const fullPixels = readStoredZlib(full.get('IDAT'));
+  assert.deepEqual([...fullPixels], [0, 0, 0, 0]);
+
   assert.throws(() => createProgressBar(0.25, 'rgb(10, 20, 30)'), /#RRGGBB/);
   const png = createProgressBar(0.25, '#0A141E', 8, 2);
   const chunks = readChunks(new Uint8Array(png));
